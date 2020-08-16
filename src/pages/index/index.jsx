@@ -59,7 +59,7 @@ function arrayBufferToString(arr) {
 export default class Index extends Component {
 	state = {
 		status: 'Pending...',
-		statusCode: 0 //0: Pending 1: Recording 2: Sending file
+		statusCode: 0 //0: Pending 1: Recording 2: Sending file 3: Paused
 	};
 
 	showErrMsg = ({ errMsg }) => {
@@ -129,15 +129,15 @@ export default class Index extends Component {
 		const recorderManager = Taro.getRecorderManager();
 
 		recorderManager.onStart(() => {
-			this.setState({ status: 'Recording...' });
+			this.setState({ status: 'Recording...', statusCode: 1 });
 		})
 
 		recorderManager.onPause(() => {
-			this.setState({ status: 'Paused...' });
+			this.setState({ status: 'Paused...', statusCode: 3 });
 		})
 
 		recorderManager.onResume(() => {
-			this.setState({ status: 'Recording...' });
+			this.setState({ status: 'Recording...', statusCode: 1 });
 		})
 
 		recorderManager.onError(this.showErrMsg);
@@ -152,7 +152,6 @@ export default class Index extends Component {
 				format: 'wav'
 			};
 			recorderManager.start(options);
-			this.setState({ status: 'Recording', statusCode: 1 })
 		}
 		else if (this.state.statusCode == 1)
 			recorderManager.stop();
